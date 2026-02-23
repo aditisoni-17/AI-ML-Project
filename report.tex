@@ -24,34 +24,44 @@ Credit risk, machine learning, random forest, explainable AI, agentic systems, f
 \end{IEEEkeywords}
 
 \section{Introduction}
-Traditional credit underwriting relies heavily on static scorecards and rigid, rule-based systems. These legacy systems often fail to adapt to complex financial behaviors, lack transparency into why an applicant was rejected, and require significant manual review time from credit analysts.
+Traditional credit underwriting relies heavily on static scorecards and rigid, rule-based systems. These legacy systems often fail to adapt to complex financial behaviors and lack transparency into why an applicant was rejected. 
 
-The purpose of this platform is to solve the manual bottleneck in modern fintech by introducing a system that can continuously learn and adapt. The primary goals are to rapidly predict the statistical likelihood of borrower default and to deploy an LLM-driven Agent that can synthesize this data to explain risk factors and draft lending recommendations. This architecture enables scaling loan origination, reducing human underwriting time, and maintaining explainable compliance standards.
-
-\section{Related Work}
-Extensive research has been conducted on statistical risk modeling in the financial sector, where Logistic Regression has long been considered the industry standard due to its interpretability. Recent advancements in ensemble methods, particularly tree-based algorithms like Random Forests and Gradient Boosted Trees, have demonstrated superior predictive performance on non-linear financial behaviors. However, the ``black box'' nature of complex models has historically hindered their adoption in heavily regulated environments. Recent integrations of Explainable AI (XAI) and Retrieval-Augmented Generation (RAG) paradigms provide a bridge by translating mathematical feature importance into transparent, auditable natural language insights.
+The purpose of this platform is to solve the manual bottleneck in modern fintech by introducing a system that can continuously learn and adapt. The architecture enables scaling loan origination, reducing human underwriting time, and maintaining explainable compliance standards through a hybrid ML and Agentic approach.
 
 \section{Methodology}
 
 \subsection{Dataset Description}
-The project utilizes a Credit Risk Benchmark Dataset representing historical profiles of borrowers. Key features include age, monthly income, number of dependents, utilization of credit limits (Revolving Utilization), debt ratios, and historical repayment behavior across various lateness intervals (30--59 days, 60--89 days, 90+ days). The target variable (\texttt{dlq\_2yrs}) constitutes a binary flag indicating whether a borrower hit delinquency within a 2-year window.
+The project utilizes a Credit Risk Benchmark Dataset representing historical profiles of borrowers. Key features include age, monthly income, number of dependents, utilization of credit limits (Revolving Utilization), debt ratios, and historical repayment behavior. The target variable constitutes a binary flag indicating whether a borrower hit delinquency within a 2-year window.
 
-\subsection{Preprocessing}
-To maintain dataset integrity without distorting distributions, missing values (NaNs) in numerical features were handled via automated median imputation. By imputing medians rather than means, the methodology stays robust to extreme outliers typical in income and debt data.
+\subsection{Preprocessing \& Engineering}
+To maintain dataset integrity, missing values in numerical features were handled via automated median imputation, staying robust to extreme outliers typical in income data. Variables are uniformly scaled to prepare for model ingestion.
 
-\subsection{Feature Engineering}
-Categorical dimensions of the data were securely processed using one-hot encoding frameworks (dropping the first category to avoid multicollinearity), converting text fields into a machine-readable format. Variables are uniformly scaled to prepare for model ingestion.
+\subsection{System Architecture}
+The basic architecture of the integrated scoring system is shown in Figure \ref{fig:arch}. It follows a linear pipeline from ingestion to risk classification.
 
-\subsection{Models Used}
-The primary model powering the initial quantitative risk phase is a \texttt{RandomForestClassifier}. To combat the severe class imbalance inherently present in default prediction environments, the model dynamically adjusts weights using the \texttt{class\_weight="balanced"} hyperparameter along with 100 base estimators.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{architecture.png}
+    \caption{AI Credit Risk Scoring System Architecture}
+    \label{fig:arch}
+\end{figure}
 
-\subsection{Training and Validation}
-The dataset was partitioned into an 80/20 train-test split, stratified across the target variable to ensure the rare default class was appropriately distributed in both folds. Validation metrics extended beyond standard accuracy to focus strongly on Precision, Recall, and ROC-AUC, specifically recognizing that False Positives (missing a true default) carry devastating financial costs.
+\subsection{Modeling Algorithm}
+The primary model is a \texttt{RandomForestClassifier}. The model calculates the predicted class $\hat{y}$ for an applicant $x$ by aggregating the predictions from $B$ individual decision trees $T_b$:
+\begin{equation}
+    \hat{y} = \text{mode} \{ T_1(x), T_2(x), \dots, T_B(x) \}
+\end{equation}
+Furthermore, the default probability $P(Y=1 | X)$ is estimated as:
+\begin{equation}
+    P(Y=1 | X) = \frac{1}{B} \sum_{b=1}^{B} P_b(Y=1 | X)
+\end{equation}
+
+To combat class imbalance, the system uses the \texttt{class\_weight="balanced"} hyperparameter with 100 base estimators.
 
 \section{Results}
 
-\subsection{Quantitative Results}
-When evaluating risk pipelines, Accuracy alone can be misleading due to class imbalance. We validated the Random Forest model across multiple critical axes. The results, as tested on the hold-out set, demonstrate robust separation ability:
+\subsection{Performance Metrics}
+The model was validated using an 80/20 train-test split. The results, as tested on the hold-out set, demonstrate robust separation ability:
 
 \begin{table}[h]
 \centering
@@ -69,36 +79,29 @@ ROC-AUC & 0.8531 \\
 \end{tabular}
 \end{table}
 
-The strict optimization on ROC-AUC (reaching $\sim$0.853) proves the model's excellent capability to accurately separate performing loans from potential defaults across threshold boundaries.
+\subsection{Feature Importance (XAI)}
+The Random Forest model inherently estimates the importance of each feature in reducing node impurity. Figure \ref{fig:importance} provides a visualization of the top factors contributing to the risk scoring outcome.
 
-\subsection{Explainability (XAI)}
-Node-level split importances extracted directly from the underlying Random Forest revealed several primary risk drivers:
-\begin{enumerate}
-    \item \textbf{Revolving Utilization:} The balance-to-limit ratio on open revolving accounts.
-    \item \textbf{Debt Ratio:} Total monthly debt payments compared to gross monthly income.
-    \item \textbf{Historical Delinquency:} The frequency of reaching 90+ days past due.
-\end{enumerate}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.48\textwidth]{importance.png}
+    \caption{Model Feature Importance - Primary Risk Indicators}
+    \label{fig:importance}
+\end{figure}
 
-\section{Discussion}
-The proposed methodology seamlessly connects high-end predictive performance with human-readable reasoning. The Random Forest achieves strong recall, making it an excellent risk-aversion tool. In phase two of the system, transforming these mathematical drivers via LLM integration provides the context required by human underwriters, overcoming traditional opacity barriers. Limitations presently include the latency introduced when chaining RAG policy-checks, which will be targeted in future optimization iterations.
+As shown, \textbf{Revolving Utilization} and \textbf{Debt Ratio} emerge as the leading indicators of financial stress and credit risk.
 
 \section{Conclusion}
-This system demonstrates the practical viability of hybridizing predictive machine learning with generative AI in fintech. By achieving strong ROC-AUC performance and providing structured, autonomous lending recommendations, the platform sets a modern standard for efficient, interpretable, and scalable credit underwriting.
+This system demonstrates the practical viability of hybridizing predictive machine learning with generative AI in fintech. By achieving strong ROC-AUC performance and providing structured recommendations, the platform sets a modern standard for efficient, interpretable credit underwriting.
 
 \appendix
 \section{Repository Layout}
-The complete source code, trained models, and documentation follow standard logical groupings.
-
-\subsection{Directory Structure}
-The system architecture encapsulates modular logic across specific components:
+The complete source code and trained models follow standard logical groupings:
 \begin{itemize}
-    \item \texttt{app/}: Contains the Streamlit user-interface scripts (\texttt{streamlit\_app.py}) for manual inference.
-    \item \texttt{data/}: Houses the baseline CSV dataset utilized for evaluations.
-    \item \texttt{models/}: Destination for trained serialized models (\texttt{risk\_model.pkl}) used during fast microservice inference.
-    \item \texttt{notebooks/}: Internal Jupyter notebooks (\texttt{eda.ipynb}) employed for preliminary visual exploration and statistical evaluation.
-    \item \texttt{src/}: Modular Python pipelines detailing cleaning logic (\texttt{preprocess.py}) and the main entry logic (\texttt{train\_model.py}).
-    \item \texttt{requirements.txt}: Defines exact Python module variants essential for execution stability.
-    \item \texttt{README.md}: Primary overview highlighting project objectives and execution details.
+    \item \texttt{app/}: Streamlit UI scripts (\texttt{streamlit\_app.py}).
+    \item \texttt{src/}: Cleaning logic and main training entry.
+    \item \texttt{models/}: Serialized model files.
+    \item \texttt{README.md}: Project overview and setup.
 \end{itemize}
 
 \end{document}
