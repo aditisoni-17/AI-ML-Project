@@ -48,7 +48,7 @@ We employed a \textbf{Random Forest Classifier}, an ensemble learning method tha
 
 \begin{figure}[h]
     \centering
-    \fbox{Architecture Diagram Placeholder: Data $\rightarrow$ Preprocessing $\rightarrow$ Random Forest $\rightarrow$ Risk Score}
+    \includegraphics[width=0.9\textwidth]{architecture.png}
     \caption{AI Credit Risk Scoring System Architecture}
     \label{fig:arch}
 \end{figure}
@@ -92,12 +92,12 @@ The model's performance on the test set is evaluated using several metrics. The 
 \end{table}
 
 \subsection{Feature Importance}
-The Random Forest model inherently estimates the importance of each feature. View Figure \ref{fig:importance} for a conceptual visualization of leading risk indicators.
+The Random Forest model inherently estimates the importance of each feature in reducing node impurity. Figure \ref{fig:importance} provides a visualization of the top factors contributing to the risk scoring outcome.
 
 \begin{figure}[h]
     \centering
-    \fbox{Feature Importance Chart Placeholder (e.g., bar chart showing Credit Utilization is highest)}
-    \caption{Leading Indicators of Credit Risk}
+    \includegraphics[width=0.9\textwidth]{importance.png}
+    \caption{Model Feature Importance - Primary Risk Indicators}
     \label{fig:importance}
 \end{figure}
 
