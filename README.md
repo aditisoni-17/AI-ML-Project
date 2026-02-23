@@ -1,25 +1,24 @@
-# 🏦 AI Credit Risk Scoring System
+# 🏦 Intelligent Credit Risk Scoring & Agentic Lending Decision Support System
 
-A professional machine learning application designed to predict the probability of credit delinquency within the next two years. This project uses traditional Random Forest classification to provide high-accuracy risk assessments through an interactive web-based dashboard.
+An end-to-end AI-powered fintech platform designed to predict borrower credit risk. This system introduces a two-phase architecture: a quantitative Machine Learning pipeline for rapid prediction of default probabilities, and a qualitative Agentic AI Assistant for formulating professional, explainable lending recommendations.
 
 ## 🚀 Overview
-Financial institutions face significant challenges in assessing the creditworthiness of applicants. This system leverages demographic and financial profile data to calculate a real-time risk score, helping lenders make data-driven decisions.
+Traditional underwriting processes are often rigid and lack transparency. This platform leverages a Random Forest classifier combined with robust preprocessing to accurately classify high-risk and low-risk candidates while prioritizing critical metrics such as Recall and ROC-AUC.
 
 ### Key Features
-*   **Predictive Scoring:** Real-time default probability estimation.
-*   **Risk Classification:** Binary classification (Low Risk vs. High Risk) using balanced forest weights.
-*   **Model Insights:** Transparent visualization of feature importance (e.g., Credit Utilization, Age).
+*   **Two-Phase Architecture:** Quantitative ML pipeline + Qualitative Agentic Assistant.
+*   **Explainable AI (XAI):** Translates mathematical feature importance into transparent insights.
+*   **Robust Preprocessing:** Automated median imputation and feature scaling.
 *   **Interactive UI:** Clean, responsive dashboard built with Streamlit.
 
 ---
 
 ## 🛠️ Tech Stack
-*   **Language:** Python 3.9+
-*   **ML Framework:** Scikit-Learn
+*   **ML Core:** Scikit-Learn (Random Forest)
 *   **Data Processing:** Pandas, NumPy
 *   **Web Dashboard:** Streamlit
 *   **Visualizations:** Matplotlib
-*   **Formatting:** LaTeX (Project Report)
+*   **Report Formatting:** LaTeX (IEEE Conference Style)
 
 ---
 
@@ -29,13 +28,15 @@ Financial institutions face significant challenges in assessing the creditworthi
 │   └── streamlit_app.py      # Main web application code
 ├── src/
 │   ├── preprocess.py        # Data cleaning and pipeline logic
-│   ├── train_model.py       # Model training and evaluation script
-│   └── explain_model.py     # Feature importance calculation
+│   └── train_model.py       # Model training and evaluation
 ├── models/
 │   └── risk_model.pkl       # Serialized Random Forest model
+├── notebooks/
+│   └── eda.ipynb            # Exploratory Data Analysis
 ├── data/
 │   └── Credit Risk...csv    # Benchmark dataset
-├── report.tex               # Professional LaTeX source
+├── report.tex               # IEEE Style LaTeX source
+├── requirements.txt         # Dependency variants
 └── README.md                # Project documentation
 ```
 
