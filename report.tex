@@ -6,7 +6,7 @@
 \usepackage{booktabs}
 \usepackage{cite}
 
-\title{Intelligent Credit Risk Scoring \& Agentic Lending Decision Support System}
+\title{Intelligent Credit Risk Scoring \& Automated Lending Decision Support System}
 
 \author{\IEEEauthorblockN{Krit Garg, Divya Pahuja, Deepak Pathik, Aditi Soni}
 \IEEEauthorblockA{Horizon}}
@@ -16,17 +16,17 @@
 \maketitle
 
 \begin{abstract}
-This document presents an end-to-end AI-powered fintech platform designed to predict borrower credit risk. Traditional underwriting processes are often rigid and lack transparency. Our system introduces a two-phase architecture: a quantitative Machine Learning pipeline for rapid prediction of default probabilities, and a qualitative Agentic AI Assistant for formulating professional, explainable lending recommendations. Using a Random Forest classifier combined with robust preprocessing, the system accurately classifies high-risk and low-risk candidates while prioritizing critical metrics such as Recall and ROC-AUC.
+This document presents an end-to-end AI-powered fintech platform designed to predict borrower credit risk. Traditional underwriting processes are often rigid and lack transparency. Our system introduces a machine learning-driven architecture for rapid prediction of default probabilities and an automated decision support framework for formulating professional lending recommendations. Using a Random Forest classifier combined with robust preprocessing, the system accurately classifies high-risk and low-risk candidates while prioritizing critical metrics such as Recall and ROC-AUC for financial stability.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Credit risk, machine learning, random forest, explainable AI, agentic systems, fintech.
+Credit risk, machine learning, random forest, explainable AI, decision support systems, fintech.
 \end{IEEEkeywords}
 
 \section{Introduction}
 Traditional credit underwriting relies heavily on static scorecards and rigid, rule-based systems. These legacy systems often fail to adapt to complex financial behaviors and lack transparency into why an applicant was rejected. 
 
-The purpose of this platform is to solve the manual bottleneck in modern fintech by introducing a system that can continuously learn and adapt. The architecture enables scaling loan origination, reducing human underwriting time, and maintaining explainable compliance standards through a hybrid ML and Agentic approach.
+The purpose of this platform is to solve the manual bottleneck in modern fintech by introducing a system that can continuously learn from historical data. The architecture enables scaling loan origination, reducing human underwriting time, and maintaining explainable compliance standards through an integrated ML scoring and automated reporting approach.
 
 \section{Methodology}
 
@@ -47,11 +47,11 @@ The basic architecture of the integrated scoring system is shown in Figure \ref{
 \end{figure}
 
 \subsection{Modeling Algorithm}
-The primary model is a \texttt{RandomForestClassifier}. The model calculates the predicted class $\hat{y}$ for an applicant $x$ by aggregating the predictions from $B$ individual decision trees $T_b$:
+The primary model is a \texttt{RandomForestClassifier}. Unlike simple decision trees, this ensemble method improves generalization. The model calculates the predicted class $\hat{y}$ for an applicant $x$ by aggregating the predictions from $B$ individual decision trees $T_b$:
 \begin{equation}
     \hat{y} = \text{mode} \{ T_1(x), T_2(x), \dots, T_B(x) \}
 \end{equation}
-Furthermore, the default probability $P(Y=1 | X)$ is estimated as:
+Furthermore, the default probability $P(Y=1 | X)$ is estimated as the mean predicted probability across the ensemble:
 \begin{equation}
     P(Y=1 | X) = \frac{1}{B} \sum_{b=1}^{B} P_b(Y=1 | X)
 \end{equation}
@@ -61,7 +61,7 @@ To combat class imbalance, the system uses the \texttt{class\_weight="balanced"}
 \section{Results}
 
 \subsection{Performance Metrics}
-The model was validated using an 80/20 train-test split. The results, as tested on the hold-out set, demonstrate robust separation ability:
+The model was validated using an 80/20 train-test split. The results demonstrate robust separation ability:
 
 \begin{table}[h]
 \centering
@@ -80,7 +80,7 @@ ROC-AUC & 0.8531 \\
 \end{table}
 
 \subsection{Feature Importance (XAI)}
-The Random Forest model inherently estimates the importance of each feature in reducing node impurity. Figure \ref{fig:importance} provides a visualization of the top factors contributing to the risk scoring outcome.
+The Random Forest model inherently estimates the importance of each feature. Figure \ref{fig:importance} provides a visualization of the top factors.
 
 \begin{figure}[h]
     \centering
@@ -89,14 +89,19 @@ The Random Forest model inherently estimates the importance of each feature in r
     \label{fig:importance}
 \end{figure}
 
-As shown, \textbf{Revolving Utilization} and \textbf{Debt Ratio} emerge as the leading indicators of financial stress and credit risk.
+\section{Discussion}
+The quantitative results highlight a critical trade-off in credit risk modeling: the balance between precision and recall. In a lending environment, a False Negative (failing to identify a default) is significantly more costly than a False Positive. By utilizing balanced class weights, our model achieves a recall of 0.775, ensuring that the majority of high-risk applicants are successfully flagged.
+
+The use of Random Forest also provides essential transparency through feature importance. Financial regulations often require lenders to provide a "Statement of Reasons" for denying credit. Our system automates this by identifying the primary drivers—such as Revolving Utilization—which serves as a proxy for financial stress. This bridge between mathematical modeling and practical decision-making ensures that the system is not a "black box," but an interpretable tool for credit analysts.
+
+Furthermore, the ROC-AUC score of 0.85 indicates that the model has strong discriminative power across varying probability thresholds, allowing for adjustable risk-appetite settings based on current economic conditions.
 
 \section{Conclusion}
-This system demonstrates the practical viability of hybridizing predictive machine learning with generative AI in fintech. By achieving strong ROC-AUC performance and providing structured recommendations, the platform sets a modern standard for efficient, interpretable credit underwriting.
+This system demonstrates the practical viability of using ensemble machine learning for automated fintech scoring. By achieving strong ROC-AUC performance and providing structured, explainable decision support, the platform sets a modern standard for efficient and interpretable credit underwriting.
 
 \appendix
 \section{Repository Layout}
-The complete source code and trained models follow standard logical groupings:
+The system architecture encapsulates modular logic:
 \begin{itemize}
     \item \texttt{app/}: Streamlit UI scripts (\texttt{streamlit\_app.py}).
     \item \texttt{src/}: Cleaning logic and main training entry.

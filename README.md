@@ -1,6 +1,6 @@
-# 🏦 Intelligent Credit Risk Scoring & Agentic Lending Decision Support System
+# 🏦 Intelligent Credit Risk Scoring & Automated Lending Decision Support System
 
-An end-to-end AI-powered fintech platform designed to predict borrower credit risk. This system introduces a two-phase architecture: a quantitative Machine Learning pipeline for rapid prediction of default probabilities, and a qualitative Agentic AI Assistant for formulating professional, explainable lending recommendations.
+An end-to-end AI-powered fintech platform designed to predict borrower credit risk. This system introduces a machine learning-driven architecture for rapid prediction of default probabilities and an automated decision support framework for formulating professional lending recommendations.
 
 ## 🚀 Overview
 Traditional underwriting processes are often rigid and lack transparency. This platform leverages a Random Forest classifier combined with robust preprocessing to accurately classify high-risk and low-risk candidates while prioritizing critical metrics such as Recall and ROC-AUC.
@@ -69,5 +69,3 @@ The model was trained on a benchmark credit dataset and evaluated on unseen test
 
 ---
 
-## 🖋️ Author
-**Aditi**
